@@ -14,10 +14,9 @@ Umbrella chart for bitnami postgresql
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| postgresql."containerPorts.postgresql" | int | `5432` |  |
-| postgresql.image.repository | string | `"bitnami/postgresql"` |  |
-| postgresql.image.tag | string | `"10.21.0"` |  |
-
+| postgresql.containerPorts.postgresql | int | `5432` |  |
+| postgresql.image.tag | string | `"10.22.0-debian-11-r6"` |  |
+| postgresql.networkPolicy.create | boolean | `false` |  |
 ----------------------------------------------
 
 

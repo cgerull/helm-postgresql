@@ -2,8 +2,12 @@
 #
 postgresql:
   image:
-    repository: bitnami/postgresql
-    tag: "10.21.0"
-    # tag: "14.4.0-debian-11-r19"
+    tag: "10.22.0-debian-11-r6"
+  # tag: "14.4.0-debian-11-r19"
 
-  containerPorts.postgresql: 5432
+  containerPorts:
+    postgresql: 5432
+
+  networkPolicy:
+    create: false
+
