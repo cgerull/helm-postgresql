@@ -5,9 +5,9 @@ description: Umbrella chart for bitnami postgresql
 type: application
 
 version: 0.1.0
-appVersion: "10.22.0"
+appVersion: "15.4"
 
 dependencies:
   - name: postgresql
     repository: https://charts.bitnami.com/bitnami
-    version: 11.6.19
+    version: 15.5.1
