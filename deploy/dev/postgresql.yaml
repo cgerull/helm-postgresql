@@ -4,7 +4,7 @@ postgresql:
     storageClass: ""
   auth:
     ##
-    username: "dpc-oa"
+    username: "myuser"
     existingSecret: "postgres-user"
   primary:
     initdb:
