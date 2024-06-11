@@ -169,11 +169,3 @@ postgresql:
     enabled: false
   sealedSecrets:
     enabled: false
-    # secrets:
-    #   - secretName: minio-api-user
-    #     app: postgresql
-    #     annotations:
-    #       sealedsecrets.bitnami.com/cluster-wide: "true"
-    #     encryptedData:
-    #       password: AgC...
-    #       user: AgB...
