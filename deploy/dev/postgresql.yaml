@@ -22,6 +22,7 @@ postgresql:
       ## @param backup.cronjob.schedule Set the cronjob parameter schedule
       # schedule: "@hourly"
       schedule: "*/5 * * * *"
+      ttlSecondsAfterFinished: "400"
     podSecurityContext:
       enabled: false
     containerSecurityContext: {}
