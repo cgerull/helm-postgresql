@@ -21,4 +21,14 @@ postgresql:
     cronjob:
       ## @param backup.cronjob.schedule Set the cronjob parameter schedule
       # schedule: "@hourly"
-      schedule: "*/15 * * * *"
+      schedule: "*/5 * * * *"
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext: {}
+    labels: {}
+    storage:
+      size: 2Gi
+      resourcePolicy: "keep"
+  metrics:
+    ## @param metrics.enabled Start a prometheus exporter
+    enabled: false
