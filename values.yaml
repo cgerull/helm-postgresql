@@ -69,8 +69,7 @@ postgresql:
     enabled: false
     cronjob:
       ## @param backup.cronjob.schedule Set the cronjob parameter schedule
-      schedule: "@hourly"
-      # schedule: "*/15 * * * *"
+      schedule: "@daily"
       ## @param backup.cronjob.concurrencyPolicy Set the cronjob parameter concurrencyPolicy
       concurrencyPolicy: Allow
       ## @param backup.cronjob.failedJobsHistoryLimit Set the cronjob parameter failedJobsHistoryLimit
@@ -80,7 +79,7 @@ postgresql:
       ## @param backup.cronjob.startingDeadlineSeconds Set the cronjob parameter startingDeadlineSeconds
       startingDeadlineSeconds: ""
       ## @param backup.cronjob.ttlSecondsAfterFinished Set the cronjob parameter ttlSecondsAfterFinished
-      ttlSecondsAfterFinished: ""
+      ttlSecondsAfterFinished: "86400"
       ## @param backup.cronjob.restartPolicy Set the cronjob parameter restartPolicy
       restartPolicy: OnFailure
       ## @param backup.cronjob.podSecurityContext.enabled Enable PodSecurityContext for CronJob/Backup
