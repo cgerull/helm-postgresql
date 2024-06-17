@@ -39,7 +39,7 @@ postgresql:
         size: 2Gi
         resourcePolicy: "keep"
   restore:
-    enabled: false
+    enabled: true
   metrics:
     ## @param metrics.enabled Start a prometheus exporter
     enabled: false

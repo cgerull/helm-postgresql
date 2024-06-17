@@ -1,4 +1,7 @@
 -- PostgreSql demo database
+-- Create a new database and populate it with some data
+-- Require the `demo-user` role to be created before running this script
+-- should be run as demo-user
 --
 CREATE DATABASE demo WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'C';
 ALTER DATABASE demo OWNER TO "demo-user";
@@ -3236,4 +3239,3 @@ VALUES
   ('Ellas Special Salmon', 8),
   ('Roberts Rich Spaghetti', 5),
   ('Mias Popular Ice', 14);
-
