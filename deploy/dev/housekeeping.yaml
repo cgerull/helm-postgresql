@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: "2024-06-12T21:23:21Z"
+  generation: 1
+  labels:
+    app: housekeeping
+  name: housekeeping
+  namespace: postgresql
+  uid: 29d95772-f68a-4c8e-a3b5-c18f5739b81e
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: housekeeping
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: housekeeping
+    spec:
+      containers:
+      - image: minio/minio
+        imagePullPolicy: Always
+        name: minio
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: "minio"
+        - name: MINIO_SECRET_KEY
+          value: "minio123"
+        - name: MINIO_ALIAS
+          value: "minio"
+        command:
+          - /bin/sh
+          - -c
+          - "tail -f /dev/null"
+        volumeMounts:
+          - name: datadir
+            mountPath: /backup/pgdump
+            subPath:
+          - name: empty-dir
+            mountPath: /tmp
+            subPath: tmp-dir
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 3
+      volumes:
+        - name: datadir
+          persistentVolumeClaim:
+            claimName: postgres-postgresql-pgdumpall
+        - name: empty-dir
+          emptyDir: {}
+status: {}

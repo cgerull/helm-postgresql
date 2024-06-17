@@ -57,6 +57,8 @@ postgresql:
     ##     memory: 1024Mi
     ##
     resources: {}
+    podAnnotations:
+      backup.velero.io/backup-volumes: data
   ## @section Backup parameters
   ## This section implements a trivial logical dump cronjob of the database.
   ## This only comes with the consistency guarantees of the dump program.
@@ -67,8 +69,7 @@ postgresql:
     enabled: false
     cronjob:
       ## @param backup.cronjob.schedule Set the cronjob parameter schedule
-      schedule: "@hourly"
-      # schedule: "*/15 * * * *"
+      schedule: "@daily"
       ## @param backup.cronjob.concurrencyPolicy Set the cronjob parameter concurrencyPolicy
       concurrencyPolicy: Allow
       ## @param backup.cronjob.failedJobsHistoryLimit Set the cronjob parameter failedJobsHistoryLimit
@@ -78,7 +79,7 @@ postgresql:
       ## @param backup.cronjob.startingDeadlineSeconds Set the cronjob parameter startingDeadlineSeconds
       startingDeadlineSeconds: ""
       ## @param backup.cronjob.ttlSecondsAfterFinished Set the cronjob parameter ttlSecondsAfterFinished
-      ttlSecondsAfterFinished: ""
+      ttlSecondsAfterFinished: "86400"
       ## @param backup.cronjob.restartPolicy Set the cronjob parameter restartPolicy
       restartPolicy: OnFailure
       ## @param backup.cronjob.podSecurityContext.enabled Enable PodSecurityContext for CronJob/Backup
@@ -115,7 +116,8 @@ postgresql:
       ## @param backup.cronjob.labels Set the cronjob labels
       labels: {}
       ## @param backup.cronjob.annotations Set the cronjob annotations
-      annotations: {}
+      annotations:
+        backup.velero.io/backup-volumes: datadir
       ## @param backup.cronjob.nodeSelector Node labels for PostgreSQL backup CronJob pod assignment
       ## ref: https://kubernetes.io/docs/user-guide/node-selection/
       ##
@@ -127,7 +129,7 @@ postgresql:
         existingClaim: ""
         ## @param backup.cronjob.storage.resourcePolicy Setting it to "keep" to avoid removing PVCs during a helm delete operation. Leaving it empty will delete PVCs after the chart deleted
         ##
-        resourcePolicy: ""
+        resourcePolicy: "keep"
         ## @param backup.cronjob.storage.storageClass PVC Storage Class for the backup data volume
         ## If defined, storageClassName: <storageClass>
         ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -138,7 +140,7 @@ postgresql:
         ## @param backup.cronjob.storage.accessModes PV Access Mode
         ##
         accessModes:
-        - ReadWriteOnce
+        - ReadWriteMany
         ## @param backup.cronjob.storage.size PVC Storage Request for the backup data volume
         ##
         size: 8Gi
@@ -160,17 +162,11 @@ postgresql:
           ## See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#labelselector-v1-meta for more details
           ##
           selector: {}
+  restore:
+    enabled: false
   metrics:
     ## @param metrics.enabled Start a prometheus exporter
     ##
     enabled: false
   sealedSecrets:
     enabled: false
-    # secrets:
-    #   - secretName: minio-api-user
-    #     app: postgresql
-    #     annotations:
-    #       sealedsecrets.bitnami.com/cluster-wide: "true"
-    #     encryptedData:
-    #       password: AgC...
-    #       user: AgB...

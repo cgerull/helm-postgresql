@@ -1,0 +1,47 @@
+---
+postgresql:
+  global:
+    storageClass: ""
+    postgresql:
+      auth:
+        ##
+        username: "demo-user"
+        database: "demo"
+        existingSecret: "postgres-users"
+        secretKeys:
+          adminPasswordKey: postgres-password
+          userPasswordKey: password
+          replicationPasswordKey: replication-password
+  primary:
+    podLabels:
+      clgr.deployment: "dev-1"
+    persistence:
+      size: 2Gi
+    initdb:
+      scripts:
+        create_db.sql: |
+          CREATE DATABASE datastore WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'C';
+          ALTER DATABASE datastore OWNER TO "demo-user";
+
+  backup:
+    ## @param backup.enabled Enable the logical dump of the database "regularly"
+    enabled: true
+    cronjob:
+      ## @param backup.cronjob.schedule Set the cronjob parameter schedule
+      # schedule: "@hourly"
+      schedule: "*/5 * * * *"
+      ttlSecondsAfterFinished: "400"
+      podSecurityContext:
+        enabled: false
+      containerSecurityContext: {}
+      labels: {}
+      storage:
+        size: 2Gi
+        resourcePolicy: "keep"
+  restore:
+    enabled: true
+  metrics:
+    ## @param metrics.enabled Start a prometheus exporter
+    enabled: false
+  sealedSecrets:
+    enabled: false
