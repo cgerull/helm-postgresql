@@ -1,0 +1,23 @@
+name: Lint Helm Chart
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: '3.4.0'
+
+    - name: Run Helm Lint
+      continue-on-error: true
+      run: |
+        for env in $(/bin/ls deploy); do
+            helm lint --values deploy/$env/postgresql.yaml charts/postgresql
+        done
