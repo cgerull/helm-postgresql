@@ -16,4 +16,7 @@ jobs:
         version: '3.4.0'
 
     - name: Run Helm Lint
-      run: helm lint .
+      run: |
+        for env in $(/bin/ls deploy); do
+            helm lint --values deploy/$env/postgresql.yaml charts/postgresql
+        done
