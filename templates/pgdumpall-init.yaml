@@ -4,6 +4,12 @@ kind: Job
 metadata:
   name: {{ include "postgresql.fullname" . }}-pgdumpall-init
 spec:
+  backoffLimit: 6
+  completionMode: NonIndexed
+  completions: 1
+  manualSelector: false
+  parallelism: 1
+  podReplacementPolicy: TerminatingOrFailed
   ttlSecondsAfterFinished: {{ .Values.postgresql.backup.cronjob.ttlSecondsAfterFinished }}
   template:
     metadata:
@@ -26,6 +32,7 @@ spec:
       {{- end }}
       containers:
         - name: pgdumpall-init
+          image: bitnami/postgresql:latest
           image: {{ .Values.postgresql.image.registry }}/bitnami/postgresql:{{ .Values.postgresql.image.tag }}
           imagePullPolicy: {{ .Values.postgresql.image.pullPolicy | quote }}
           env:
@@ -42,7 +49,7 @@ spec:
               value: {{ include "postgresql.fullname" . }}
             - name: PGDUMP_DIR
               value: {{ .Values.postgresql.backup.cronjob.storage.mountPath }}
-          {/* Check for pg_dumpall-*.pgdump */}
+          {{/* Check for pg_dumpall-*.pgdump */}}
           command:
             - /bin/sh
             - -c
@@ -64,9 +71,9 @@ spec:
           resources: {{- toYaml .Values.backup.cronjob.resources | nindent 14 }}
           {{- end }}
       restartPolicy: {{ .Values.postgresql.backup.cronjob.restartPolicy }}
-      {{- if .Values.postgresql.backup.cronjob.podSecurityContext.enabled }}
-      securityContext:
-        fsGroup: {{ .Values.postgresql.backup.cronjob.podSecurityContext.fsGroup }}
+      {{- with .Values.postgresql.backup.cronjob.podSecurityContext.enabled }}
+      podSecurityContext:
+        {{ toYaml | nindent 8 }}
       {{- end }}
       volumes:
         {{- if .Values.postgresql.backup.cronjob.storage.enabled }}

@@ -2,12 +2,19 @@
 postgresql:
   global:
     storageClass: ""
-  auth:
-    ##
-    username: "demo-user"
-    database: "demo"
-    existingSecret: "postgres-user"
+    postgresql:
+      auth:
+        ##
+        username: "demo-user"
+        database: "demo"
+        existingSecret: "postgres-users"
+        secretKeys:
+          adminPasswordKey: postgres-password
+          userPasswordKey: password
+          replicationPasswordKey: replication-password
   primary:
+    podLabels:
+      clgr.deployment: "dev-1"
     persistence:
       size: 2Gi
     initdb:
@@ -24,13 +31,17 @@ postgresql:
       # schedule: "@hourly"
       schedule: "*/5 * * * *"
       ttlSecondsAfterFinished: "400"
-    podSecurityContext:
-      enabled: false
-    containerSecurityContext: {}
-    labels: {}
-    storage:
-      size: 2Gi
-      resourcePolicy: "keep"
+      podSecurityContext:
+        enabled: false
+      containerSecurityContext: {}
+      labels: {}
+      storage:
+        size: 2Gi
+        resourcePolicy: "keep"
+  restore:
+    enabled: false
   metrics:
     ## @param metrics.enabled Start a prometheus exporter
+    enabled: false
+  sealedSecrets:
     enabled: false
