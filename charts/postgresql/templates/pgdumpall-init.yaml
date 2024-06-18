@@ -47,15 +47,17 @@ spec:
               value: {{ .Values.postgresql.backup.cronjob.storage.mountPath }}
           {{/* Check for pg_dumpall-*.pgdump */}}
           command:
-          command:
             - /bin/sh
             - -c
           args:
             - |
-              [ $(ls -1 ${PGDUMP_DIR}/pg_dumpall-*.pgdump 2>/dev/null | wc -l) -gt 0 ] && exit 0
-              sleep 30
+              [ $(ls -1 ${PGDUMP_DIR}/pg_dumpall-*.pgdump 2>/dev/null | wc -l) -gt 0 ] \
+              && echo "PGDUMP_DIR already mounted"; exit 0
+              echo "Waiting for database to be ready..."
+              sleep 20
               pg_dumpall --clean --if-exists --load-via-partition-root --quote-all-identifiers \
-                --no-password --file=${PGDUMP_DIR}/pg_dumpall-init-$(date '+%Y-%m-%d-%H-%M').pgdump
+                --no-password --file=${PGDUMP_DIR}/pg_dumpall-init-$(date '+%Y-%m-%d-%H-%M').pgdump \
+              && echo "Wrote initial pg_dumpall to ${PGDUMP_DIR}/pg_dumpall-init-$(date '+%Y-%m-%d-%H-%M').pgdump"
             # - /bin/sh
             # - -c
             # - sleep 30; pg_dumpall --clean --if-exists --load-via-partition-root --quote-all-identifiers

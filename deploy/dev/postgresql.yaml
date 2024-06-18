@@ -30,6 +30,14 @@ postgresql:
       ## @param backup.cronjob.schedule Set the cronjob parameter schedule
       # schedule: "@hourly"
       schedule: "*/5 * * * *"
+      command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Starting backup..."
+          pg_dumpall --clean --if-exists --load-via-partition-root --quote-all-identifiers \
+            --no-password --file=${PGDUMP_DIR}/pg_dumpall-$(date '+%Y-%m-%d-%H-%M').pgdump \
+          && echo "Database dump written to ${PGDUMP_DIR}/pg_dumpall-$(date '+%Y-%m-%d-%H-%M').pgdump"
       ttlSecondsAfterFinished: "400"
       podSecurityContext:
         enabled: false
